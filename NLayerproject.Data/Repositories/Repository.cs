@@ -13,7 +13,7 @@ namespace NLayerproject.Data.Repositories
     {
         protected readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
-        public Repository(DbContext context)
+        public Repository(AppDbContext context)
         {
             _context = context; // veritabanına erişeeğiz
             _dbSet = context.Set<TEntity>(); // tablolara erişebiliriz
