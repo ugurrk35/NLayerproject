@@ -7,13 +7,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NLayerproject.Core.Repositories;
+using NLayerproject.Core.Services;
 using NLayerproject.Core.UnitOfWorks;
 using NLayerproject.Data;
+using NLayerproject.Data.Repositories;
 using NLayerproject.Data.UnitOfWorks;
+using NLayerproject.Service.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace NLayerproject.API
 {
@@ -29,6 +34,15 @@ namespace NLayerproject.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IService<>), typeof(Service<>));
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+
+
+
             services.AddDbContext<AppDbContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConStr"));
             });
