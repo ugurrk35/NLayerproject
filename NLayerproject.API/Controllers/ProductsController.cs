@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLayerproject.API.DTOs;
+using NLayerproject.API.Filters;
 using NLayerproject.Core.Models;
 using NLayerproject.Core.Services;
 using System.Collections.Generic;
@@ -21,20 +22,21 @@ namespace NLayerproject.API.Controllers
            _productService = productService;
             _mapper = mapper;
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var products = await _productService.GetAllAsync();
             return Ok(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
+        [ServiceFilter(typeof(NotFoundFilter))]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var products = await _productService.GetByIdAsync(id);
             return Ok(_mapper.Map<ProductDto>(products));
         }
-
+        [ServiceFilter(typeof(NotFoundFilter))]
         [HttpGet("{id}/category")]
         public async Task<IActionResult> GetWithCategoryById(int id)
         {
@@ -42,7 +44,7 @@ namespace NLayerproject.API.Controllers
             return Ok(_mapper.Map<ProductWithCategoryDto>(product));
 
         }
-
+        [ValidationFilter]
         [HttpPost]
         public async Task<IActionResult> Save(ProductDto productDto)
         {
@@ -57,6 +59,7 @@ namespace NLayerproject.API.Controllers
             var product=_productService.Update(_mapper.Map<Product>(productDto));
             return NoContent();
         }
+        [ServiceFilter(typeof(NotFoundFilter))]
         [HttpDelete]
         public IActionResult Remove(int id)
         {
